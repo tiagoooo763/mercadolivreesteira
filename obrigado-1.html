@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Acompanhe seu Pedido</title>
+  <meta name="robots" content="noindex" />
+  <script src="js/funnel-config.js"></script>
+  <script>if (window.FUNNEL) FUNNEL.guardUpsell();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { background: #2a2a2a; min-height: 100vh; }
+    .up-wrap { width: 100%; max-width: 32rem; margin: 0 auto; }
+    .up-alert { background: #fee2e2; border-bottom: 1px solid #fecaca; padding: .75rem 1rem; display: flex; align-items: center; gap: .5rem; }
+    .up-alert svg { flex-shrink: 0; color: #dc2626; width: 16px; height: 16px; }
+    .up-alert span { color: #b91c1c; font-size: .875rem; font-weight: 500; }
+    .up-body { background: #fff; min-height: 100vh; padding: 1.5rem 1rem 2rem; }
+    .up-title { font-size: 1.5rem; font-weight: 700; text-align: center; color: #111827; margin-bottom: 1.5rem; }
+    /* Tracking card */
+    .track-card { border: 1px solid #e5e7eb; border-radius: .75rem; padding: 1rem; margin-bottom: 1.5rem; }
+    .track-head { display: flex; align-items: flex-start; gap: 1rem; }
+    .track-icon { width: 3.5rem; height: 3.5rem; border: 1px solid #e5e7eb; border-radius: .5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .track-icon svg { width: 2rem; height: 2rem; color: #1f2937; }
+    .track-info .name { font-weight: 700; color: #111827; font-size: .9375rem; }
+    .track-info .order { font-size: .875rem; color: #6b7280; }
+    .track-info .code { font-size: .875rem; color: #6b7280; display: flex; align-items: center; gap: .375rem; margin-top: 2px; }
+    .track-status { margin-top: .75rem; }
+    .badge-transit { display: inline-block; background: #22c55e; color: #fff; font-size: .75rem; font-weight: 700; padding: 3px 12px; border-radius: 999px; }
+    .track-origin { margin-top: .75rem; display: flex; align-items: center; gap: .375rem; font-size: .875rem; color: #6b7280; }
+    .track-origin svg { width: 1rem; height: 1rem; }
+    /* Step indicators */
+    .steps-row { display: grid; grid-template-columns: repeat(4,1fr); gap: .5rem; margin-bottom: 1.5rem; }
+    .step-cell { text-align: center; }
+    .step-pill { height: 2.25rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; gap: .25rem; color: #fff; font-size: .875rem; font-weight: 700; }
+    .step-pill.done { background: #22c55e; }
+    .step-pill.error { background: #ef4444; }
+    .step-pill.idle { background: #9ca3af; }
+    .step-label { font-size: .75rem; color: #6b7280; margin-top: .25rem; }
+    /* Warning box */
+    .warn-box { border: 2px solid #facc15; border-radius: .75rem; overflow: hidden; }
+    .warn-head { background: #fef2f2; border-bottom: 1px solid #facc15; padding: .75rem 1rem; display: flex; align-items: center; gap: .5rem; }
+    .warn-head svg { width: 1.25rem; height: 1.25rem; color: #dc2626; flex-shrink: 0; }
+    .warn-head .t1 { font-weight: 700; color: #dc2626; font-size: .9375rem; }
+    .warn-head .t2 { font-size: .875rem; color: #dc2626; }
+    .warn-body { background: #fff; padding: 1rem; }
+    .warn-body p { font-size: .875rem; color: #374151; margin: 0 0 .75rem; line-height: 1.5; }
+    .warn-body p:last-of-type { margin-bottom: 1rem; }
+    .btn-calc { width: 100%; height: 3rem; border-radius: .75rem; background: #3b82f6; color: #fff; font-weight: 700; font-size: .875rem; border: none; display: flex; align-items: center; justify-content: center; gap: .5rem; cursor: pointer; }
+    .btn-calc:hover { background: #2563eb; }
+    /* Calculated box */
+    .calc-box { border: 2px solid #4ade80; border-radius: .75rem; overflow: hidden; background: #f0fdf4; }
+    .calc-inner { padding: 1.5rem 1rem; text-align: center; }
+    .calc-icon { width: 3.5rem; height: 3.5rem; border-radius: 999px; border: 2px solid #22c55e; display: flex; align-items: center; justify-content: center; margin: 0 auto .75rem; }
+    .calc-icon svg { width: 1.75rem; height: 1.75rem; color: #22c55e; }
+    .calc-title { font-size: 1.125rem; font-weight: 700; color: #111827; margin-bottom: 1rem; }
+    .calc-table { background: #fff; border-radius: .5rem; padding: 1rem; margin-bottom: 1rem; border: 1px solid #f3f4f6; }
+    .calc-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: .5rem; font-size: .875rem; }
+    .calc-row .lbl { color: #4b5563; }
+    .calc-row .old { color: #9ca3af; text-decoration: line-through; }
+    .calc-row .disc { color: #16a34a; font-weight: 700; }
+    .calc-row .val { font-size: 1.25rem; font-weight: 800; color: #16a34a; }
+    .btn-liberar { width: 100%; height: 3rem; border-radius: .75rem; background: #22c55e; color: #fff; font-weight: 700; font-size: .875rem; border: none; cursor: pointer; }
+    .btn-liberar:hover { background: #16a34a; }
+    .calc-warn { margin: 0 1rem 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: .5rem; padding: .75rem; font-size: .75rem; color: #374151; }
+    .calc-warn span { color: #dc2626; font-weight: 700; }
+    /* Loader */
+    .loader-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 0; }
+    .loader-box svg { width: 2.5rem; height: 2.5rem; color: #22c55e; animation: spin 1s linear infinite; margin-bottom: 1rem; }
+    .loader-box p { font-size: .875rem; color: #6b7280; }
+    /* PIX upsell panel */
+    .up-pix { border: 1px solid #e5e7eb; border-radius: .75rem; padding: 1.5rem; text-align: center; background: #fff; }
+    .up-pix h2 { font-size: 1.125rem; font-weight: 700; color: #111827; margin: 0 0 .25rem; }
+    .up-pix .sub { font-size: .875rem; color: #6b7280; margin-bottom: 1rem; }
+    .up-pix .qr-wrap { display: inline-block; background: #fff; padding: .75rem; border-radius: .75rem; border: 1px solid #e5e7eb; margin-bottom: 1rem; }
+    .up-pix .qr-wrap img { display: block; width: 192px; height: 192px; }
+    .up-pix .amount { font-size: 1.5rem; font-weight: 800; color: #111827; }
+    .up-pix .amount-sub { font-size: .75rem; color: #6b7280; margin: .25rem 0 1rem; }
+    .up-pix .code-box { background: #f9fafb; border-radius: .5rem; padding: .75rem; margin-bottom: .5rem; text-align: left; }
+    .up-pix .code-lbl { font-size: .75rem; color: #6b7280; margin-bottom: .25rem; }
+    .up-pix .code-val { font-family: monospace; font-size: .6875rem; color: #1f2937; word-break: break-all; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .btn-copy { width: 100%; height: 2.75rem; border-radius: .75rem; background: #1f2937; color: #fff; font-weight: 700; font-size: .875rem; border: none; display: flex; align-items: center; justify-content: center; gap: .5rem; cursor: pointer; margin-bottom: .5rem; }
+    .btn-copy:hover { background: #111827; }
+    .pix-expiry { display: flex; align-items: center; justify-content: center; gap: .375rem; font-size: .75rem; color: #6b7280; margin-top: 1rem; }
+    .pix-expiry svg { width: .875rem; height: .875rem; }
+    .pix-expiry .spin-sm { width: .75rem; height: .75rem; animation: spin 1s linear infinite; margin-left: .25rem; }
+    .up-simulate { margin-top: .75rem; width: 100%; background: #fff; border: 2px solid #22c55e; color: #22c55e; font-weight: 700; padding: .75rem; border-radius: .5rem; cursor: pointer; font-size: .875rem; }
+    /* Paid */
+    .paid-box { border: 1px solid #e5e7eb; border-radius: .75rem; padding: 1.5rem; text-align: center; background: #fff; }
+    .paid-icon { width: 4rem; height: 4rem; border-radius: 999px; background: #dcfce7; display: flex; align-items: center; justify-content: center; margin: 0 auto .75rem; }
+    .paid-icon svg { width: 2rem; height: 2rem; color: #22c55e; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="up-wrap">
+    <div class="up-alert" id="alert-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      <span>NÃO FECHE ESSA PÁGINA — Seu pedido ainda não foi finalizado</span>
+    </div>
+    <div class="up-body">
+      <h1 class="up-title">Acompanhe seu Pedido</h1>
+      <div id="up-content"></div>
+    </div>
+  </div>
+
+  <script src="js/tracking-attribution.js"></script>
+  <script src="js/pixel.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/obrigado-1.js"></script>
+</body>
+</html>

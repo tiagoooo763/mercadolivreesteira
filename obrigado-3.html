@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Reembolso Seguro — Portal de Reembolso</title>
+  <meta name="robots" content="noindex" />
+  <script src="js/funnel-config.js"></script>
+  <script>if (window.FUNNEL) FUNNEL.guardUpsell();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { background: #f3f4f6; min-height: 100vh; }
+    .rb-header { background: #1d4ed8; padding: 1rem 1.5rem; display: flex; align-items: center; gap: .75rem; }
+    .rb-header svg { width: 2rem; height: 2rem; color: rgba(255,255,255,.6); }
+    .rb-header .t1 { color: rgba(255,255,255,.6); font-weight: 600; font-size: 1.125rem; }
+    .rb-header .t2 { color: rgba(255,255,255,.4); font-size: .75rem; }
+    .rb-main { display: flex; align-items: flex-start; justify-content: center; padding: 1.5rem 1rem 2rem; min-height: calc(100vh - 64px); }
+    .rb-card { background: #fff; border-radius: .75rem; box-shadow: 0 4px 24px rgba(0,0,0,.08); max-width: 36rem; width: 100%; padding: 1.5rem; }
+    /* Warning page */
+    .warn-title { font-size: 1.25rem; font-weight: 700; color: #111827; display: flex; align-items: center; gap: .5rem; margin-bottom: 1.5rem; }
+    .warn-title svg { width: 1.5rem; height: 1.5rem; color: #ca8a04; }
+    .info-item { border-radius: .5rem; padding: .75rem; display: flex; align-items: flex-start; gap: .5rem; font-size: .875rem; color: #374151; margin-bottom: .75rem; }
+    .info-item svg { width: 1rem; height: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .info-item.green { background: #f0fdf4; border-left: 4px solid #22c55e; }
+    .info-item.green svg { color: #22c55e; }
+    .info-item.red { background: #fef2f2; border-left: 4px solid #ef4444; }
+    .info-item.red svg { color: #ef4444; }
+    .info-item.yellow { background: #fffbeb; border-left: 4px solid #fbbf24; }
+    .info-item.yellow svg { color: #ca8a04; }
+    .warn-btns { display: flex; gap: .75rem; margin-top: 1.5rem; }
+    .btn-cancel { flex: 1; height: 2.75rem; border: 1px solid #e5e7eb; border-radius: .5rem; background: none; font-size: .875rem; font-weight: 500; cursor: pointer; }
+    .btn-cancel:hover { background: #f9fafb; }
+    .btn-continue { flex: 1; height: 2.75rem; border-radius: .5rem; background: #1d4ed8; color: #fff; font-size: .875rem; font-weight: 700; border: none; cursor: pointer; }
+    .btn-continue:hover { background: #1e40af; }
+    /* Form page */
+    .form-title { font-size: 1.25rem; font-weight: 700; color: #1d4ed8; margin-bottom: .25rem; }
+    .form-sub { font-size: .875rem; color: #6b7280; margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: .875rem; font-weight: 700; color: #374151; margin-bottom: .25rem; }
+    .form-group label .req { color: #ef4444; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: .625rem .75rem; border: 1px solid #d1d5db; border-radius: .5rem;
+      font-family: inherit; font-size: .875rem; outline: none; background: #fff;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: #1d4ed8; }
+    .form-group input.err, .form-group textarea.err { border-color: #ef4444; background: #fef2f2; }
+    .form-group .error { font-size: .75rem; color: #ef4444; font-weight: 600; margin-top: .25rem; }
+    .form-group textarea { min-height: 6.25rem; resize: vertical; }
+    .form-char { font-size: .75rem; color: #1d4ed8; margin-top: .25rem; }
+    .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .upload-label { display: flex; align-items: center; gap: .5rem; border: 1px dashed #d1d5db; border-radius: .5rem; padding: .75rem 1rem; cursor: pointer; font-size: .875rem; color: #374151; width: fit-content; margin-top: .375rem; }
+    .upload-label:hover { background: #f9fafb; }
+    .upload-label svg { width: 1rem; height: 1rem; color: #6b7280; }
+    .file-list { margin-top: .5rem; }
+    .file-item { font-size: .75rem; color: #4b5563; }
+    .terms-row { display: flex; align-items: flex-start; gap: .75rem; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1rem; }
+    .terms-row input[type=checkbox] { width: 1.125rem; height: 1.125rem; margin-top: 1px; accent-color: #1d4ed8; flex-shrink: 0; }
+    .terms-row label { font-size: .875rem; color: #4b5563; cursor: pointer; }
+    .btn-submit { width: 100%; height: 3rem; border-radius: .5rem; background: #1d4ed8; color: #fff; font-weight: 700; font-size: .9375rem; border: none; cursor: pointer; margin-top: 1rem; }
+    .btn-submit:hover { background: #1e40af; }
+    /* Success */
+    .success-check { width: 4rem; height: 4rem; border-radius: 999px; background: #dcfce7; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+    .success-check svg { width: 2.5rem; height: 2.5rem; color: #22c55e; }
+    .success-title { font-size: 1.5rem; font-weight: 700; color: #15803d; text-align: center; margin-bottom: .25rem; }
+    .success-sub { font-size: .875rem; color: #6b7280; text-align: center; margin-bottom: 1.5rem; }
+    .protocol-box { border: 2px solid #bfdbfe; border-radius: .75rem; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem; }
+    .protocol-box .lbl { display: flex; align-items: center; justify-content: center; gap: .5rem; font-size: .875rem; color: #1d4ed8; margin-bottom: .5rem; }
+    .protocol-box .lbl svg { width: 1rem; height: 1rem; }
+    .protocol-box .num { font-size: 1.5rem; font-weight: 800; color: #111827; }
+    .info-note { background: #eff6ff; border-radius: .75rem; padding: 1.25rem; font-size: .875rem; color: #374151; margin-bottom: 1.5rem; }
+    .btn-voltar { display: block; text-align: center; width: 100%; padding: .75rem; border-radius: .5rem; background: #1d4ed8; color: #fff; font-weight: 700; font-size: .875rem; border: none; cursor: pointer; text-decoration: none; }
+    .btn-voltar:hover { background: #1e40af; }
+  </style>
+</head>
+<body>
+  <div id="rb-app"></div>
+
+  <script src="js/tracking-attribution.js"></script>
+  <script src="js/pixel.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/obrigado-3.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Pagamento confirmado — seu pedido está sendo preparado</title>
+  <meta name="robots" content="noindex" />
+  <script src="js/funnel-config.js"></script>
+  <script>if (window.FUNNEL) FUNNEL.guardConfirmacao();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f4f6; font-family: Inter, system-ui, -apple-system, sans-serif; color: #111827; }
+    .pc-top { background: #16a34a; padding: 1rem 1.25rem; color: #fff; font-weight: 700; font-size: .9375rem; display: flex; align-items: center; gap: .5rem; }
+    .pc-main { display: flex; justify-content: center; padding: 1.5rem 1rem 2.5rem; }
+    .pc-card { background: #fff; width: 100%; max-width: 34rem; border-radius: .875rem; box-shadow: 0 6px 28px rgba(0,0,0,.08); padding: 1.75rem 1.5rem; }
+    .pc-check { width: 4.5rem; height: 4.5rem; border-radius: 999px; background: #dcfce7; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+    .pc-check svg { width: 2.5rem; height: 2.5rem; stroke: #16a34a; }
+    h1 { font-size: 1.5rem; text-align: center; margin: 0 0 .5rem; }
+    .pc-sub { text-align: center; color: #4b5563; font-size: .9375rem; margin: 0 0 1.5rem; line-height: 1.5; }
+    .pc-box { border: 1px solid #e5e7eb; border-radius: .75rem; padding: 1rem; margin-bottom: 1.25rem; }
+    .pc-row { display: flex; justify-content: space-between; gap: 1rem; font-size: .875rem; padding: .375rem 0; }
+    .pc-row span { color: #6b7280; }
+    .pc-row b { color: #111827; text-align: right; word-break: break-all; }
+    .pc-steps { list-style: none; padding: 0; margin: 0 0 1.25rem; }
+    .pc-steps li { display: flex; gap: .625rem; font-size: .875rem; color: #374151; padding: .5rem 0; border-bottom: 1px solid #f3f4f6; }
+    .pc-steps li:last-child { border-bottom: 0; }
+    .pc-steps .dot { width: 1.25rem; height: 1.25rem; border-radius: 999px; background: #dcfce7; color: #16a34a; font-size: .75rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .pc-note { background: #f0fdf4; border-left: 4px solid #22c55e; border-radius: .5rem; padding: .875rem; font-size: .8125rem; color: #166534; line-height: 1.5; }
+    .pc-cta { display: block; text-align: center; margin-top: 1.25rem; padding: .875rem; border-radius: .5rem; background: #111827; color: #fff; font-weight: 700; font-size: .875rem; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="pc-top">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    Pagamento confirmado
+  </div>
+
+  <div class="pc-main">
+    <div class="pc-card">
+      <div class="pc-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <h1>Obrigado! Recebemos seu pagamento</h1>
+      <p class="pc-sub">Seu PIX foi confirmado e o pedido já entrou na fila de separação. Vamos preparar, embalar e despachar para o endereço informado no checkout.</p>
+
+      <div class="pc-box" id="pcResumo"></div>
+
+      <ul class="pc-steps">
+        <li><span class="dot">1</span><div><b>Pagamento aprovado</b><br>Confirmado agora mesmo.</div></li>
+        <li><span class="dot">2</span><div><b>Separação e embalagem</b><br>Em até 1 dia útil.</div></li>
+        <li><span class="dot">3</span><div><b>Envio</b><br>Você recebe o código de rastreio por e-mail e WhatsApp assim que o pedido for postado.</div></li>
+      </ul>
+
+      <div class="pc-note">Guarde o número do pedido acima. Qualquer dúvida sobre entrega ou prazo, informe esse número no atendimento.</div>
+
+      <a class="pc-cta" href="index.html">Voltar para a loja</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var id = (window.FUNNEL && FUNNEL.pedidoId()) || '';
+      var order = null;
+      try { order = JSON.parse(localStorage.getItem('pdap-order-' + id) || 'null'); } catch (_) {}
+
+      var produto = '';
+      try { produto = localStorage.getItem('last_order_product') || ''; } catch (_) {}
+
+      var valor = '—';
+      if (order && typeof order.amount_cents === 'number') {
+        valor = (order.amount_cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      }
+
+      var email = '';
+      try { email = (order && order.customer && order.customer.email) || (JSON.parse(localStorage.getItem('pdap-customer') || 'null') || {}).email || ''; } catch (_) {}
+
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+
+      var linhas = '';
+      if (id) linhas += '<div class="pc-row"><span>Número do pedido</span><b>' + esc(id) + '</b></div>';
+      if (produto) linhas += '<div class="pc-row"><span>Produto</span><b>' + esc(produto) + '</b></div>';
+      linhas += '<div class="pc-row"><span>Valor pago</span><b>' + esc(valor) + '</b></div>';
+      linhas += '<div class="pc-row"><span>Status</span><b style="color:#16a34a">Pago — em preparação</b></div>';
+      if (email) linhas += '<div class="pc-row"><span>Confirmação enviada para</span><b>' + esc(email) + '</b></div>';
+
+      document.getElementById('pcResumo').innerHTML = linhas;
+    })();
+  </script>
+</body>
+</html>
