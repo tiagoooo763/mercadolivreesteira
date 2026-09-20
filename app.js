@@ -248,9 +248,7 @@
       });
     } else {
       stage.innerHTML = `
-        <img id="stageImg" src="${g.full}" srcset="${g.full} ${g.w}w, ${g.zoom} ${g.zw}w"
-             sizes="(max-width:899px) 92vw, 358px"
-             width="${g.w}" height="${g.h}" decoding="async" alt="${esc(g.alt)}">
+        <img id="stageImg" src="${g.full}" width="${g.w}" height="${g.h}" decoding="async" alt="${esc(g.alt)}">
         <span class="stage__lens" id="lens" aria-hidden="true"></span>`;
       zoomArmed = false;
       armZoom();
@@ -310,6 +308,24 @@
     const idx = activePhotos.indexOf(activeGallery[gi]);
     if (idx >= 0) openLightbox(idx, activePhotos.map(p => ({ src: p.zoom, thumb: p.thumb, alt: p.alt, w: p.zw, h: p.zh })));
   });
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+  stage.addEventListener('touchstart', e => {
+    if (e.touches && e.touches.length === 1) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+  stage.addEventListener('touchend', e => {
+    if (!e.changedTouches || e.changedTouches.length === 0) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) setGallery(gi + 1);
+      else setGallery(gi - 1);
+    }
+  }, { passive: true });
 
   $('#galPrev').addEventListener('click', () => setGallery(gi - 1));
   $('#galNext').addEventListener('click', () => setGallery(gi + 1));
